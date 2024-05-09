@@ -2,3 +2,5 @@ config.json
 node_modules
 .idea
 dist
+.direnv
+prisma/*.db
