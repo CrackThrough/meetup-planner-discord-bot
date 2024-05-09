@@ -1,33 +1,71 @@
-# Command.TS V5 QuickStart Template
+# Meetup Planner Discord Bot
 
-This is a template of discord bot made with [@pikokr/command.ts](https://github.com/pikokr/command.ts) v5 with slash commands.
+This is a scuffed and rushed discord bot to create meetup things easier.
 
-## Creating an App
+## Setup
 
-You’ll need to have Node 16.9.0 or later version on your local development machine (but it’s not required on the server). We recommend using the latest LTS version. You can use nvm (macOS/Linux) or nvm-windows to switch Node versions between different projects.
-To create a new app, you should use [npx](https://medium.com/@maybekatz/introducing-npx-an-npm-package-runner-55f7d4bd282b).
+### Using Docker
 
-```shell
-npx degit pikokr/command.ts-v5-template my-app
-cd my-app
+Copy `config.exmaple.json` to create `config.json`, and fill the contents. `guilds` is an array of guild snowflakes.
 
-corepack enable
+Don't forget to fill out `.env` as well.
 
-pnpm i
-pnpm dev
+```sh
+# Start the bot container
+docker run --name meetup-planner --restart always -d -v $PWD/config.json:/app/config.json -v $PWD/data:/data -e DATABASE_URL=file:/data/ ghcr.io/crackthrough/meetup-planner-discord-bot:latest
+
+# Migrate
+docker exec meetup-planner pnpm prisma migrate deploy
 ```
 
-Runs the app in development mode.
+### Manual Setup
 
-### Install Dependencies
+0.  (Optionally) Use Nix
 
-You can install dependencies with `pnpm install`(this template is configured to use only pnpm for package manager). This must be done the first time you create the app.
+    If you use [Nix](https://nixos.org) to run nodejs, prisma will fail to load openssl.
 
-### Run the bot in development mode.
+    Alternatively, I suggest using predefined direnv flake.
 
-You can run your bot in development mode with `pnpm dev`
+    ```sh
+    direnv allow
+    ```
 
-### Build the bot and run for production
+1.  Install Packages
 
-If you use `pnpm build` without errors in your code, the build file will appear in `dist` folder.
-You can execute this file with `pnpm start` for your production.
+    Optionally use corepack, run `pnpm i`. That's it.
+
+2.  Build
+
+    ```sh
+    pnpm build
+    ```
+
+3.  Configure
+
+    First, copy and rename `config.example.json` to `config.json` and fill up your config file.
+
+    Second, create a file named `.env` containing:
+
+    ```sh
+    DATABASE_URL=file:./meetup.db
+    ```
+
+4.  Migrate DB
+
+    You can simply run below command to migrate the database you specified at above section:
+
+    ```sh
+    pnpm prisma migrate deploy
+    ```
+
+5.  Run
+
+    ```sh
+    pnpm start
+    ```
+
+    Now you've done it.
+
+# Credits
+
+Huge thanks to [paring](https://github.com/pikokr) for both technical and emotional support.
