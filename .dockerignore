@@ -1,0 +1,5 @@
+.direnv
+flake.nix
+flake.lock
+renovate.json
+.env
